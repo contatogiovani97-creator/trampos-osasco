@@ -1,0 +1,7 @@
+{
+  "name": "trampos-osasco-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
