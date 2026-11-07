@@ -1,1 +1,113 @@
 
+ion-tabs {
+  --ion-tab-bar-background: #fff;
+}
+
+.app-tab-bar {
+  --background: #fff;
+  --border: 1px solid #e8edf3;
+  --color: #8995a5;
+  --color-selected: #02367b;
+  height: calc(76px + env(safe-area-inset-bottom, 0px));
+  padding: 8px 14px calc(8px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 24px rgba(18, 42, 72, 0.08);
+}
+
+.app-tab-bar ion-tab-button {
+  --color: #8995a5;
+  --color-selected: #02367b;
+  --ripple-color: rgba(2, 54, 123, 0.12);
+  min-height: 60px;
+  overflow: visible;
+  font-size: 11px;
+  font-weight: 650;
+  transition: color 160ms ease;
+}
+
+.app-tab-bar ion-tab-button ion-label {
+  margin-top: 5px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.1px;
+}
+
+.unread-tab-count {
+  display: block;
+  margin-top: 1px;
+  color: #d93025;
+  font-size: 8px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tab-icon {
+  position: relative;
+  display: grid;
+  width: 40px;
+  height: 31px;
+  place-items: center;
+  border-radius: 12px;
+  color: currentColor;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.tab-icon ion-icon {
+  font-size: 22px;
+}
+
+.unread-tab-badge {
+  position: absolute;
+  top: -4px;
+  right: -3px;
+  min-width: 17px;
+  min-height: 17px;
+  padding: 2px 4px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  background: #d93025;
+  font-size: 9px;
+  line-height: 1;
+}
+
+ion-tab-button.tab-selected .tab-icon:not(.announce-icon) {
+  color: #02367b;
+  background: #eaf0f8;
+}
+
+.announce-icon {
+  width: 42px;
+  height: 34px;
+  margin-top: -12px;
+  border: 3px solid #fff;
+  border-radius: 14px;
+  color: #fff;
+  background: #14913c;
+  box-shadow: 0 4px 10px rgba(20, 145, 60, 0.24);
+}
+
+.announce-icon ion-icon {
+  font-size: 22px;
+}
+
+ion-tab-button.tab-selected .announce-icon {
+  background: #087133;
+  transform: translateY(-2px);
+}
+
+@media (min-width: 700px) {
+  .app-tab-bar {
+    height: 76px;
+    padding-right: max(14px, calc((100% - 560px) / 2));
+    padding-bottom: 8px;
+    padding-left: max(14px, calc((100% - 560px) / 2));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-tab-bar ion-tab-button,
+  .tab-icon {
+    transition: none;
+  }
+}

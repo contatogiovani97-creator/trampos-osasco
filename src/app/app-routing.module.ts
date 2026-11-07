@@ -5,6 +5,20 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'professional/:id',
+    loadChildren: () => import('./professional-profile/professional-profile.module')
+      .then(m => m.ProfessionalProfilePageModule)
+  },
+  {
+    path: 'company/:id',
+    loadChildren: () => import('./company-profile/company-profile.module')
+      .then(m => m.CompanyProfilePageModule)
+  },
+  {
+    path: 'legal',
+    loadChildren: () => import('./legal/legal.module').then(m => m.LegalPageModule)
   }
 ];
 @NgModule({

@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Acontece em Osasco</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="community-content">
+  <header class="community-hero">
+    <p class="eyebrow">NOSSA CIDADE, NOSSA COMUNIDADE</p>
+    <h1>Osasco em movimento</h1>
+    <p>Notícias, eventos e futebol de várzea da cidade em um só lugar.</p>
+  </header>
+
+  <nav class="community-filters" aria-label="Tipo de conteúdo">
+    <button type="button" [class.active]="selectedType() === 'news'" [attr.aria-pressed]="selectedType() === 'news'"
+      (click)="selectType('news')">
+      <ion-icon name="newspaper-outline" aria-hidden="true"></ion-icon>
+      Notícias
+    </button>
+    <button type="button" [class.active]="selectedType() === 'event'" [attr.aria-pressed]="selectedType() === 'event'"
+      (click)="selectType('event')">
+      <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+      Eventos
+    </button>
+    <button type="button" [class.active]="selectedType() === 'football'" [attr.aria-pressed]="selectedType() === 'football'"
+      (click)="selectType('football')">
+      <ion-icon name="football-outline" aria-hidden="true"></ion-icon>
+      Várzea
+    </button>
+  </nav>
+
+  <section class="community-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">ACONTECE EM OSASCO</p>
+        <h2>
+          @switch (selectedType()) {
+            @case ('news') { Notícias da cidade }
+            @case ('event') { Agenda de eventos }
+            @case ('football') { Futebol de várzea }
+          }
+        </h2>
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="feedback error" role="alert">{{ error() }}</p>
+    }
+
+    @if (loading()) {
+      <p class="empty-state">Carregando publicações...</p>
+    } @else if (posts().length === 0) {
+      <div class="empty-state">
+        <ion-icon [name]="selectedType() === 'news' ? 'newspaper-outline' : selectedType() === 'event' ? 'calendar-outline' : 'football-outline'"></ion-icon>
+        @if (selectedType() === 'news') {
+          <h3>As notícias estão sendo atualizadas</h3>
+          <p>Novas notícias de Osasco aparecem automaticamente assim que o feed é atualizado.</p>
+        } @else {
+          <h3>Ainda não há publicações por aqui</h3>
+          <p>As publicações desta categoria aparecerão aqui quando forem cadastradas.</p>
+        }
+      </div>
+    } @else {
+      <div class="post-list">
+        @for (post of posts(); track post.id) {
+          <article class="post-card">
+            @if (post.type === 'news') {
+              <p class="post-kicker"><ion-icon name="newspaper-outline"></ion-icon> NOTÍCIA</p>
+            } @else if (post.type === 'football') {
+              <p class="post-kicker"><ion-icon name="football-outline"></ion-icon> FUTEBOL DE VÁRZEA</p>
+            } @else {
+              <p class="post-kicker"><ion-icon name="calendar-outline"></ion-icon> EVENTO</p>
+            }
+            <h3>{{ post.title }}</h3>
+            <p class="post-summary">{{ post.summary }}</p>
+            @if (post.type === 'news' && post.sourceUrl) {
+              <a class="source-link" [href]="post.sourceUrl" target="_blank" rel="noopener noreferrer">
+                Fonte: {{ post.sourceName || 'Leia a notícia original' }}
+                <ion-icon name="open-outline" aria-hidden="true"></ion-icon>
+              </a>
+            } @else {
+              @if (post.type === 'football') {
+                <p class="matchup">{{ post.homeTeam }} <span>×</span> {{ post.awayTeam }}</p>
+              }
+              @if (post.startsAt) {
+                <p class="post-detail"><ion-icon name="time-outline"></ion-icon>{{ post.startsAt.toDate() | date:"dd/MM/yyyy 'às' HH:mm" }}</p>
+              }
+              @if (post.venue || post.neighborhood) {
+                <p class="post-detail"><ion-icon name="location-outline"></ion-icon>{{ post.venue }}@if (post.venue && post.neighborhood) { · }{{ post.neighborhood }}</p>
+              }
+            }
+          </article>
+        }
+      </div>
+    }
+  </section>
+</ion-content>

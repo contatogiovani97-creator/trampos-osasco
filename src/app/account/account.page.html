@@ -1,0 +1,240 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Minha conta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="account-content">
+  @if (!backend.isConfigured) {
+    <section class="account-card setup-notice">
+      <ion-icon name="cloud-offline-outline"></ion-icon>
+      <h1>Conecte o Firebase</h1>
+      <p>As contas e os dados compartilhados precisam de um projeto Firebase. Configure as chaves do app nos arquivos de ambiente e publique as regras do Firestore.</p>
+    </section>
+  } @else if (!backend.authReady()) {
+    <section class="account-card"><p>Carregando sua conta...</p></section>
+  } @else if (backend.currentUser(); as user) {
+    @if (backend.profileLoading()) {
+      <section class="account-card"><p>Carregando seu perfil...</p></section>
+    } @else if (backend.profile(); as profile) {
+      <section class="account-card">
+        <div class="account-heading">
+          <div class="account-avatar-column">
+            <span class="account-avatar">
+              @if (profile.photoURL) {
+                <img [src]="profile.photoURL" [alt]="'Foto de ' + profile.displayName" />
+              } @else {
+                {{ profile.displayName.slice(0, 1).toUpperCase() }}
+              }
+            </span>
+            <button class="photo-button" type="button" [disabled]="uploadingPhoto" (click)="photoInput.click()">
+              {{ uploadingPhoto ? 'Enviando...' : profile.photoURL ? 'Trocar foto' : 'Adicionar foto' }}
+            </button>
+            <input #photoInput class="photo-input" type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+          </div>
+          <div class="account-heading-copy">
+            <p class="eyebrow">PERFIL PÚBLICO</p>
+            <h1>{{ profile.displayName }}</h1>
+            <p>{{ profile.categoryName || 'Serviços locais' }} · {{ profile.neighborhood }}</p>
+          </div>
+        </div>
+
+        <form #profileForm="ngForm" (ngSubmit)="saveProfile()">
+          <label for="profile-name">Seu nome</label>
+          <ion-input id="profile-name" name="displayName" required minlength="2" [(ngModel)]="displayName"></ion-input>
+
+          <label for="profile-category">Serviço que você oferece</label>
+          <ion-select id="profile-category" name="category" interface="popover" labelPlacement="stacked" [interfaceOptions]="accountSelectPopoverOptions" placeholder="Escolha uma categoria" [(ngModel)]="categorySlug">
+            @for (category of categories; track category.slug) {
+              <ion-select-option [value]="category.slug">{{ category.name }}</ion-select-option>
+            }
+          </ion-select>
+
+          <label for="profile-profession">Profissão ou especialidade (opcional)</label>
+          <ion-input id="profile-profession" name="professionName" maxlength="80" placeholder="Ex.: Engenheiro de Software" [(ngModel)]="professionName"></ion-input>
+
+          <label for="profile-neighborhood">Região</label>
+          <ion-select id="profile-neighborhood" name="neighborhood" required interface="popover" labelPlacement="stacked" [interfaceOptions]="accountSelectPopoverOptions" placeholder="Escolha sua região" [(ngModel)]="neighborhood">
+            @for (item of neighborhoods; track item) {
+              <ion-select-option [value]="item">{{ item }}</ion-select-option>
+            }
+          </ion-select>
+
+          <label for="profile-bio">Sobre você e seu trabalho</label>
+          <ion-textarea id="profile-bio" name="bio" rows="4" maxlength="500" placeholder="Conte sua experiência e os serviços que oferece." [(ngModel)]="bio"></ion-textarea>
+
+          <ion-button expand="block" type="submit" [disabled]="!profileForm.valid || saving">Salvar perfil</ion-button>
+        </form>
+
+        <a class="public-profile-link" [routerLink]="['/professional', user.uid]">Ver perfil público</a>
+        <p class="account-email">{{ user.email }}</p>
+        <section class="my-opportunities">
+          <h2>Minhas oportunidades</h2>
+          @if (workLoading()) {
+            <p>Carregando oportunidades e mensagens...</p>
+          } @else if (myOpportunities().length === 0) {
+            <p>Você ainda não publicou nenhum trabalho.</p>
+          } @else {
+            @for (opportunity of myOpportunities(); track opportunity.id) {
+              <article class="my-opportunity">
+                <strong>{{ opportunity.title }}</strong>
+                <span>{{ opportunity.neighborhood }} · {{ opportunity.categoryName }}</span>
+                @if (opportunity.status === 'removed') {
+                  <span class="opportunity-status">Removido · mantido no histórico</span>
+                } @else if (opportunity.status === 'closed') {
+                  <span class="opportunity-status">Encerrado · mantido no histórico</span>
+                } @else {
+                  @if (editingOpportunityId() === opportunity.id) {
+                    <form class="opportunity-edit-form" #opportunityEditForm="ngForm"
+                      (ngSubmit)="saveOpportunityEdits(opportunity)">
+                      <label [for]="'edit-title-' + opportunity.id">Título</label>
+                      <ion-input [id]="'edit-title-' + opportunity.id" name="opportunityTitle"
+                        required minlength="5" maxlength="100" [(ngModel)]="opportunityTitle"></ion-input>
+
+                      <label [for]="'edit-category-' + opportunity.id">Categoria do serviço</label>
+                      <ion-select [id]="'edit-category-' + opportunity.id" name="opportunityCategory"
+                        required interface="popover" labelPlacement="stacked"
+                        [interfaceOptions]="accountSelectPopoverOptions"
+                        [(ngModel)]="opportunityCategorySlug">
+                        @for (category of categories; track category.slug) {
+                          <ion-select-option [value]="category.slug">{{ category.name }}</ion-select-option>
+                        }
+                      </ion-select>
+
+                      <label [for]="'edit-neighborhood-' + opportunity.id">Região do trabalho</label>
+                      <ion-select [id]="'edit-neighborhood-' + opportunity.id" name="opportunityNeighborhood"
+                        required interface="popover" labelPlacement="stacked"
+                        [interfaceOptions]="accountSelectPopoverOptions"
+                        [(ngModel)]="opportunityNeighborhood">
+                        @for (item of neighborhoods; track item) {
+                          <ion-select-option [value]="item">{{ item }}</ion-select-option>
+                        }
+                      </ion-select>
+
+                      <label [for]="'edit-description-' + opportunity.id">Descrição</label>
+                      <ion-textarea [id]="'edit-description-' + opportunity.id" name="opportunityDescription"
+                        required minlength="10" maxlength="2000" rows="4"
+                        [(ngModel)]="opportunityDescription"></ion-textarea>
+
+                      <div class="opportunity-edit-actions">
+                        <ion-button type="submit" [disabled]="!opportunityEditForm.valid || savingOpportunityId() === opportunity.id">
+                          {{ savingOpportunityId() === opportunity.id ? 'Salvando...' : 'Salvar alterações' }}
+                        </ion-button>
+                        <ion-button type="button" fill="clear" [disabled]="savingOpportunityId() === opportunity.id"
+                          (click)="cancelEditingOpportunity()">Cancelar</ion-button>
+                      </div>
+                    </form>
+                  } @else {
+                    <ion-button class="edit-opportunity-button" fill="clear" type="button"
+                      (click)="startEditingOpportunity(opportunity)">Editar anúncio</ion-button>
+                  <ion-button
+                    class="remove-opportunity-button"
+                    fill="clear"
+                    type="button"
+                    [disabled]="removingOpportunityId() === opportunity.id"
+                    (click)="confirmRemoveOpportunity(opportunity)"
+                  >
+                    {{ removingOpportunityId() === opportunity.id ? 'Removendo...' : 'Remover anúncio' }}
+                  </ion-button>
+                  }
+                }
+                @if (opportunity.createdAt; as createdAt) {
+                  <span class="published-at">
+                    Anunciado em {{ createdAt.toDate() | date:"dd/MM/yyyy 'às' HH:mm" }}
+                  </span>
+                }
+                @if ((applicationsByOpportunity()[opportunity.id] || []).length === 0) {
+                  <p>Ainda não recebeu candidaturas.</p>
+                } @else {
+                  @for (application of applicationsByOpportunity()[opportunity.id]; track application.id) {
+                    <div class="application-message">
+                      <a [routerLink]="['/professional', application.applicantId]">{{ application.applicantName }}</a>
+                      <p>{{ application.message }}</p>
+                      <a [routerLink]="['/tabs/messages']"
+                        [queryParams]="{ conversation: opportunity.id + '_' + application.applicantId }">
+                        Responder na conversa
+                      </a>
+                    </div>
+                  }
+                }
+              </article>
+            }
+          }
+        </section>
+        @if (backend.profileError()) {
+          <p class="error-message" role="alert">{{ backend.profileError() }}</p>
+        }
+      </section>
+    } @else {
+      <section class="account-card">
+        <h1>Sua conta foi criada</h1>
+        <p class="account-description">O login por e-mail já está ativo, mas o Firebase ainda está bloqueando a leitura ou gravação do perfil. No Firebase Console, abra <strong>Firestore Database → Regras</strong>, publique o conteúdo do arquivo <code>firestore.rules</code> deste projeto e volte aqui. Não crie outra conta.</p>
+        @if (backend.profileError()) {
+          <p class="error-message" role="alert">{{ backend.profileError() }}</p>
+        }
+        <ion-button expand="block" (click)="reloadProfile()">Já publiquei as regras — tentar novamente</ion-button>
+      </section>
+    }
+  } @else {
+    <section class="account-card auth-card">
+      <p class="eyebrow">TRAMPOS OSASCO</p>
+      <h1>{{ mode === 'signin' ? 'Entre na sua conta' : 'Crie seu perfil' }}</h1>
+      <p class="account-description">Use a mesma conta para procurar trabalho, oferecer serviços e publicar oportunidades.</p>
+
+      <form #accountForm="ngForm" (ngSubmit)="submit()">
+        @if (mode === 'register') {
+          <label for="account-name">Seu nome</label>
+          <ion-input id="account-name" name="displayName" required minlength="2" placeholder="Como quer ser chamado?" [(ngModel)]="displayName"></ion-input>
+
+          <label for="account-category">Serviço que você oferece (opcional)</label>
+          <ion-select id="account-category" name="category" interface="popover" labelPlacement="stacked" [interfaceOptions]="accountSelectPopoverOptions" placeholder="Escolha uma categoria" [(ngModel)]="categorySlug">
+            <ion-select-option value="">Ainda não ofereço serviços</ion-select-option>
+            @for (category of categories; track category.slug) {
+              <ion-select-option [value]="category.slug">{{ category.name }}</ion-select-option>
+            }
+          </ion-select>
+
+          <label for="account-profession">Profissão ou especialidade (opcional)</label>
+          <ion-input id="account-profession" name="professionName" maxlength="80" placeholder="Ex.: Engenheiro de Software" [(ngModel)]="professionName"></ion-input>
+
+          <label for="account-neighborhood">Região</label>
+          <ion-select id="account-neighborhood" name="neighborhood" required interface="popover" labelPlacement="stacked" [interfaceOptions]="accountSelectPopoverOptions" placeholder="Escolha sua região" [(ngModel)]="neighborhood">
+            @for (item of neighborhoods; track item) {
+              <ion-select-option [value]="item">{{ item }}</ion-select-option>
+            }
+          </ion-select>
+
+          <label for="account-bio">Sobre você (opcional)</label>
+          <ion-textarea id="account-bio" name="bio" rows="3" maxlength="500" placeholder="Fale sobre os serviços ou oportunidades que procura." [(ngModel)]="bio"></ion-textarea>
+        }
+
+        <label for="account-email">E-mail</label>
+        <ion-input id="account-email" name="email" type="email" required email autocomplete="email" placeholder="voce@email.com" [(ngModel)]="email"></ion-input>
+
+        <label for="account-password">Senha</label>
+        <ion-input id="account-password" name="password" type="password" required minlength="6" [attr.autocomplete]="mode === 'register' ? 'new-password' : 'current-password'" placeholder="No mínimo 6 caracteres" [(ngModel)]="password">
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+
+        <ion-button expand="block" type="submit" [disabled]="!accountForm.valid || saving">
+          {{ saving ? 'Aguarde...' : mode === 'signin' ? 'Entrar' : 'Criar conta' }}
+        </ion-button>
+      </form>
+      <button class="mode-toggle" type="button" (click)="toggleMode()">
+        {{ mode === 'signin' ? 'Ainda não tem conta? Cadastre-se' : 'Já tem conta? Entrar' }}
+      </button>
+    </section>
+  }
+
+  @if (backend.isConfigured && backend.currentUser()) {
+    <ion-button class="logout-button" fill="clear" color="medium" (click)="logout()">Sair da conta</ion-button>
+  }
+</ion-content>
+
+@if (loadingSite()) {
+  <div class="site-loading-overlay" role="status" aria-live="polite">
+    <ion-spinner name="crescent" aria-label="Carregando"></ion-spinner>
+    <h2>Carregando seus dados</h2>
+    <p>Estamos preparando seu perfil e as informações do app.</p>
+  </div>
+}

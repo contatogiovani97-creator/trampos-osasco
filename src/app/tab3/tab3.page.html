@@ -1,17 +1,82 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Publicar oportunidade</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="advertise-content">
+  <section class="advertise-intro">
+    <span class="advertise-icon"><ion-icon name="megaphone-outline"></ion-icon></span>
+    <p class="eyebrow">CONTRATE PERTO DE VOCÊ</p>
+    <h1>Encontre quem faz acontecer</h1>
+    <p>Publique um trampo e receba mensagens de profissionais de Osasco.</p>
+  </section>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  @if (!backend.isConfigured) {
+    <section class="application-form setup-card">
+      <h2>Firebase necessário</h2>
+      <p>Configure o Firebase para publicar oportunidades que todos possam ver.</p>
+      <ion-button expand="block" routerLink="/tabs/account">Ver configuração da conta</ion-button>
+    </section>
+  } @else if (!backend.authReady()) {
+    <section class="application-form setup-card">
+      <p>Carregando sua conta...</p>
+    </section>
+  } @else if (!backend.currentUser()) {
+    <section class="application-form setup-card">
+      <h2>Entre para publicar</h2>
+      <p>Com uma conta, você pode publicar trabalhos e também se candidatar às oportunidades de outras pessoas.</p>
+      <ion-button expand="block" routerLink="/tabs/account">Entrar ou criar conta</ion-button>
+    </section>
+  } @else if (backend.profileLoading()) {
+    <section class="application-form setup-card">
+      <p>Carregando seu perfil...</p>
+    </section>
+  } @else if (!backend.profile()) {
+    <section class="application-form setup-card">
+      <h2>Complete seu perfil</h2>
+      <p>Adicione seu nome e região antes de publicar uma oportunidade.</p>
+      <ion-button expand="block" routerLink="/tabs/account">Abrir meu perfil</ion-button>
+    </section>
+  } @else {
+    <form #opportunityForm="ngForm" (ngSubmit)="publishOpportunity()" class="application-form">
+      <h2>Detalhes do trabalho</h2>
+
+      <label for="work-title">Qual serviço você precisa?</label>
+      <ion-input id="work-title" name="title" required minlength="5" maxlength="100"
+        placeholder="Ex.: Pintar apartamento de 2 quartos" [(ngModel)]="title"></ion-input>
+
+      <label for="work-category">Categoria do serviço</label>
+      <ion-select id="work-category" name="category" required interface="popover"
+        labelPlacement="stacked" [interfaceOptions]="opportunitySelectPopoverOptions"
+        placeholder="Selecione uma categoria" [(ngModel)]="categorySlug">
+        @for (category of categories; track category.slug) {
+          <ion-select-option [value]="category.slug">{{ category.name }}</ion-select-option>
+        }
+      </ion-select>
+
+      <label for="work-profession">Profissão ou especialidade (opcional)</label>
+      <ion-input id="work-profession" name="professionName" maxlength="80"
+        placeholder="Ex.: Pintor residencial" [(ngModel)]="professionName"></ion-input>
+
+      <label for="work-neighborhood">Região do trabalho</label>
+      <ion-select id="work-neighborhood" name="neighborhood" required interface="popover"
+        labelPlacement="stacked" [interfaceOptions]="opportunitySelectPopoverOptions"
+        placeholder="Selecione a região" [(ngModel)]="neighborhood">
+        @for (item of neighborhoods; track item) {
+          <ion-select-option [value]="item">{{ item }}</ion-select-option>
+        }
+      </ion-select>
+
+      <label for="work-description">Conte mais sobre o trabalho</label>
+      <ion-textarea id="work-description" name="description" required minlength="10" maxlength="2000"
+        rows="5" placeholder="Ex.: Pintura de paredes e teto em apartamento de 2 quartos, na próxima semana."
+        [(ngModel)]="description"></ion-textarea>
+
+      <ion-button expand="block" type="submit" [disabled]="!opportunityForm.valid || saving">
+        {{ saving ? 'Publicando...' : 'Publicar oportunidade' }}
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </form>
+  }
 </ion-content>

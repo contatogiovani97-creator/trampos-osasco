@@ -1,0 +1,249 @@
+ion-toolbar {
+  --background: #fff;
+  --color: #02367b;
+}
+
+.company-content {
+  --background: #f0f1f3;
+  --padding-bottom: 90px;
+}
+
+.company-cover {
+  position: relative;
+  display: grid;
+  min-height: 190px;
+  overflow: hidden;
+  place-items: center;
+  background: linear-gradient(135deg, #02367b, #456f9d 68%, #8daac8);
+}
+
+.cover-orbit {
+  position: absolute;
+  top: -105px;
+  right: -25px;
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(255, 255, 255, 0.08), 0 0 0 65px rgba(255, 255, 255, 0.05);
+}
+
+.company-monogram {
+  display: grid;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -1px;
+}
+
+.sponsored-label {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(12, 33, 59, 0.5);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.company-main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 22px 18px 24px;
+}
+
+.company-identity {
+  padding: 2px 2px 16px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #6a85a7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.company-identity h1 {
+  margin: 0;
+  color: #17243b;
+  font-size: 23px;
+  font-weight: 780;
+  letter-spacing: -0.5px;
+}
+
+.company-identity > p:last-child {
+  margin: 6px 0 0;
+  color: #788397;
+  font-size: 13px;
+}
+
+.company-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #e7eaf0;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.company-rating > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #a86500;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.company-rating ion-icon {
+  color: #f0a51b;
+}
+
+.company-rating > span:last-child {
+  color: #788397;
+  font-size: 12px;
+}
+
+.company-section {
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #e7eaf0;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.company-section h2 {
+  margin: 0 0 10px;
+  color: #17243b;
+  font-size: 16px;
+}
+
+.company-section > p {
+  margin: 0;
+  color: #59677c;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.company-section ul {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.company-section li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #43516a;
+  font-size: 13px;
+}
+
+.company-section li ion-icon {
+  color: #14913c;
+  font-size: 17px;
+}
+
+.demo-disclaimer {
+  margin: 14px 2px 0;
+  color: #858f9e;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.company-contact-bar {
+  position: fixed;
+  z-index: 20;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid #e5e9ef;
+  background: #fff;
+  box-shadow: 0 -5px 18px rgba(19, 39, 68, 0.07);
+}
+
+.company-contact-bar > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.company-contact-bar > div span {
+  color: #788397;
+  font-size: 10px;
+}
+
+.company-contact-bar > div strong {
+  overflow: hidden;
+  color: #17243b;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.company-contact-bar ion-button {
+  min-height: 45px;
+  margin: 0;
+  --background: #14913c;
+  --border-radius: 12px;
+  --box-shadow: none;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: none;
+}
+
+.company-not-found {
+  display: flex;
+  min-height: 65vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #788397;
+  text-align: center;
+}
+
+.company-not-found > ion-icon {
+  color: #6a85a7;
+  font-size: 48px;
+}
+
+.company-not-found h1 {
+  margin: 12px 0 5px;
+  color: #17243b;
+  font-size: 20px;
+}
+
+.company-not-found p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.company-not-found ion-button {
+  --background: #02367b;
+  --border-radius: 12px;
+  margin-top: 18px;
+  text-transform: none;
+}

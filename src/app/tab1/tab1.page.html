@@ -1,17 +1,185 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="home-content">
+  <header class="home-hero">
+    <div class="brand-row">
+      <div class="brand-mark" aria-hidden="true"><ion-icon name="briefcase"></ion-icon></div>
+      <div>
+        <h1 class="brand-name">Trampos Osasco</h1>
+        <p class="brand-location"><ion-icon name="location"></ion-icon> Osasco e Região</p>
+      </div>
+      <a class="account-link" routerLink="/tabs/account" [attr.aria-label]="backend.profile()?.displayName || 'Entrar na minha conta'">
+        <span class="account-avatar">
+          @if (backend.profile()?.photoURL; as photoURL) {
+            <img [src]="photoURL" [alt]="'Foto de ' + backend.profile()?.displayName" />
+          } @else {
+            <ion-icon name="person-circle-outline" aria-hidden="true"></ion-icon>
+          }
+        </span>
+        <span class="account-name">{{ backend.profile()?.displayName || 'Entrar' }}</span>
+      </a>
+    </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <label class="search-box">
+      <ion-icon name="search" aria-hidden="true"></ion-icon>
+      <input
+        type="search"
+        placeholder="Busque um serviço ou trabalho"
+        aria-label="Buscar oportunidades e profissionais"
+        [(ngModel)]="searchTerm"
+      />
+    </label>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <a class="hero-announce" routerLink="/tabs/tab3">
+      <ion-icon name="add-circle-outline" aria-hidden="true"></ion-icon>
+      Publicar uma oportunidade
+    </a>
+  </header>
+
+  @if (!backend.isConfigured) {
+    <section class="content-section">
+      <p class="setup-message">Configure o Firebase para ativar contas, perfis e o mural de oportunidades.</p>
+      <a routerLink="/tabs/account">Configurar minha conta</a>
+    </section>
+  }
+
+  <section class="content-section">
+    <a class="professional-card osasco-feature-card" routerLink="/tabs/osasco">
+      <span class="city-logo">
+        <img src="assets/logo-osasco.png" alt="Logo de Osasco" />
+      </span>
+      <span class="professional-copy">
+        <strong>Acontece em Osasco</strong>
+        <span>Notícias, eventos e futebol de várzea</span>
+      </span>
+      <ion-icon class="card-arrow" name="chevron-forward" aria-hidden="true"></ion-icon>
+    </a>
+  </section>
+
+  <section class="content-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">TRABALHOS NA REGIÃO</p>
+        <h2>Oportunidades disponíveis</h2>
+      </div>
+      @if (!loading() && !loadError()) {
+        <span class="result-count">{{ filteredOpportunities.length }}</span>
+      }
+    </div>
+    @if (loading()) {
+      <p class="empty-state">Carregando oportunidades...</p>
+    } @else if (loadError()) {
+      <p class="empty-state error-message" role="alert">{{ loadError() }}</p>
+    } @else if (filteredOpportunities.length === 0) {
+      <p class="empty-state">Ainda não há oportunidades publicadas. Quando alguém anunciar um trampo, ele aparecerá aqui.</p>
+    } @else {
+      @for (opportunity of filteredOpportunities; track opportunity.id) {
+        <article class="opportunity-card">
+          <div class="opportunity-meta">
+            <span class="opportunity-category">{{ opportunity.categoryName }}</span>
+            <span class="opportunity-neighborhood">{{ opportunity.neighborhood }}</span>
+            @if (opportunity.createdAt; as createdAt) {
+              <span class="opportunity-published-at">
+                <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+                Anunciado em {{ createdAt.toDate() | date:"dd/MM/yyyy 'às' HH:mm" }}
+              </span>
+            }
+          </div>
+          <h3>{{ opportunity.title }}</h3>
+          <p>{{ opportunity.description }}</p>
+          <a class="opportunity-owner" [routerLink]="['/professional', opportunity.ownerId]">
+            Publicado por {{ opportunity.ownerName }}
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </a>
+          @if (!backend.currentUser()) {
+            <a class="apply-link" routerLink="/tabs/account">Entre para se candidatar</a>
+          } @else if (backend.currentUser()?.uid === opportunity.ownerId) {
+            <span class="own-opportunity">Esta oportunidade foi publicada por você.</span>
+          } @else if (applicationSentId === opportunity.id) {
+            <p class="application-success" role="status">Candidatura enviada. Agora você pode continuar a conversa.</p>
+            <a class="apply-link" routerLink="/tabs/messages"
+              [queryParams]="{ conversation: applicationConversationId }">
+              Abrir conversa
+            </a>
+          } @else if (selectedOpportunityId === opportunity.id) {
+            <form class="apply-form" (ngSubmit)="submitApplication(opportunity)">
+              <label [for]="'application-' + opportunity.id">Sua mensagem</label>
+              <ion-textarea [id]="'application-' + opportunity.id" name="applicationMessage"
+                required minlength="10" maxlength="1000" rows="3"
+                placeholder="Conte sua experiência e por que você pode fazer esse trabalho."
+                [(ngModel)]="applicationMessage"></ion-textarea>
+              @if (actionError) {
+                <p class="error-message" role="alert">{{ actionError }}</p>
+              }
+              <ion-button expand="block" type="submit" [disabled]="applying">
+                {{ applying ? 'Enviando...' : 'Enviar candidatura' }}
+              </ion-button>
+            </form>
+          } @else {
+            <button type="button" class="apply-link" (click)="startApplication(opportunity)">Quero me candidatar</button>
+          }
+        </article>
+      }
+    }
+  </section>
+
+  <section class="content-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">{{ searchTerm.trim() ? 'RESULTADOS DA BUSCA' : 'OFERECEM SERVIÇOS EM OSASCO' }}</p>
+        <h2>{{ searchTerm.trim() ? 'Profissionais encontrados' : 'Profissionais da região' }}</h2>
+      </div>
+      @if (!searchTerm.trim()) {
+        <a routerLink="/tabs/tab2">Explorar</a>
+      }
+    </div>
+    @if (loading()) {
+      <p class="empty-state">Carregando profissionais...</p>
+    } @else if (loadError()) {
+      <p class="empty-state error-message" role="alert">{{ loadError() }}</p>
+    } @else if (featuredProfessionals.length === 0) {
+      <p class="empty-state">{{ searchTerm.trim() ? 'Não encontramos profissionais para essa busca.' : 'Ainda não há perfis cadastrados como profissionais.' }}</p>
+    } @else {
+      @for (professional of featuredProfessionals; track professional.id) {
+        <a class="professional-card" [routerLink]="['/professional', professional.id]">
+          <span class="avatar">
+            @if (professional.photoURL) {
+              <img [src]="professional.photoURL" [alt]="'Foto de ' + professional.displayName" />
+            } @else {
+              {{ professional.displayName.slice(0, 1).toUpperCase() }}
+            }
+          </span>
+          <span class="professional-copy">
+            <strong>{{ professional.displayName }}</strong>
+            <span>{{ professional.categoryName || 'Serviços locais' }} · {{ professional.neighborhood }}</span>
+            <span>{{ professional.bio || 'Perfil disponível para oportunidades na região.' }}</span>
+          </span>
+          <ion-icon class="card-arrow" name="chevron-forward" aria-hidden="true"></ion-icon>
+        </a>
+      }
+    }
+  </section>
+
+  @if (!searchTerm.trim()) {
+    <section class="content-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ENCONTRE UM PROFISSIONAL</p>
+          <h2>Explore categorias</h2>
+        </div>
+      </div>
+      <div class="category-grid">
+        @for (category of categories; track category.slug) {
+          <a class="category-card" [routerLink]="['/tabs/tab2', category.slug]">
+            <span class="category-icon">
+              @if (category.image) {
+                <img [src]="category.image" alt="" />
+              } @else {
+                <ion-icon [name]="category.icon"></ion-icon>
+              }
+            </span>
+            <strong>{{ category.name }}</strong>
+          </a>
+        }
+      </div>
+    </section>
+  }
 </ion-content>

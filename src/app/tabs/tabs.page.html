@@ -1,20 +1,43 @@
 <ion-tabs>
-
-  <ion-tab-bar slot="bottom">
+  <ion-tab-bar slot="bottom" class="app-tab-bar">
     <ion-tab-button tab="tab1" href="/tabs/tab1">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-      <ion-label>Tab 1</ion-label>
+      <span class="tab-icon"><ion-icon aria-hidden="true" name="home-outline"></ion-icon></span>
+      <ion-label>Início</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="tab2" href="/tabs/tab2">
-      <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
-      <ion-label>Tab 2</ion-label>
+      <span class="tab-icon"><ion-icon aria-hidden="true" name="grid-outline"></ion-icon></span>
+      <ion-label>Categorias</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="tab3" href="/tabs/tab3">
-      <ion-icon aria-hidden="true" name="square"></ion-icon>
-      <ion-label>Tab 3</ion-label>
+      <span class="tab-icon announce-icon"><ion-icon aria-hidden="true" name="add-outline"></ion-icon></span>
+      <ion-label>Publicar</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="messages" href="/tabs/messages">
+      <span class="tab-icon">
+        <ion-icon aria-hidden="true" name="chatbubbles-outline"></ion-icon>
+        @if (messagingNotifications.unreadCount() > 0) {
+          <ion-badge class="unread-tab-badge">
+            {{ messagingNotifications.unreadCount() > 99 ? '99+' : messagingNotifications.unreadCount() }}
+          </ion-badge>
+        }
+      </span>
+      <ion-label>
+        Mensagens
+        @if (messagingNotifications.unreadCount() > 0) {
+          <span class="unread-tab-count">
+            {{ messagingNotifications.unreadCount() > 99 ? '99+' : messagingNotifications.unreadCount() }}
+            {{ messagingNotifications.unreadCount() === 1 ? 'não lida' : 'não lidas' }}
+          </span>
+        }
+      </ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="account" href="/tabs/account">
+      <span class="tab-icon"><ion-icon aria-hidden="true" name="person-outline"></ion-icon></span>
+      <ion-label>Perfil</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
-
 </ion-tabs>

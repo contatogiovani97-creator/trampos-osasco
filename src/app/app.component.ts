@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
+import { MessagingNotificationsService } from './core/services/messaging-notifications.service';
+import { MarketplaceBackendService } from './core/services/marketplace-backend.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +9,12 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor() {}
+  private readonly backend = inject(MarketplaceBackendService);
+  private readonly messagingNotifications = inject(MessagingNotificationsService);
+
+  constructor() {
+    effect(() => {
+      this.messagingNotifications.setUser(this.backend.currentUser()?.uid ?? null);
+    });
+  }
 }

@@ -1,0 +1,62 @@
+<ion-header class="profile-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1" text="" aria-label="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Perfil profissional</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content">
+  @if (loading()) {
+    <section class="profile-state">
+      <ion-spinner name="crescent" aria-label="Carregando perfil"></ion-spinner>
+      <p>Carregando perfil...</p>
+    </section>
+  } @else if (profile(); as publicProfile) {
+    <div class="cover-art" aria-hidden="true">
+      <span class="cover-glow"></span>
+      <ion-icon name="briefcase"></ion-icon>
+    </div>
+
+    <main class="profile-main">
+      <section class="profile-identity">
+        <span class="avatar" aria-hidden="true">
+          @if (publicProfile.photoURL) {
+            <img [src]="publicProfile.photoURL" [alt]="'Foto de ' + publicProfile.displayName" />
+          } @else {
+            {{ publicProfile.displayName.slice(0, 1).toUpperCase() }}
+          }
+        </span>
+        <div class="identity-copy">
+          <h1>{{ publicProfile.displayName }}</h1>
+          <p>{{ publicProfile.categoryName || 'Serviços locais' }} · {{ publicProfile.neighborhood }}</p>
+        </div>
+      </section>
+
+      <section class="profile-section">
+        <h2>Sobre</h2>
+        <p>{{ publicProfile.bio || 'Este profissional ainda não adicionou uma descrição.' }}</p>
+      </section>
+
+      <section class="profile-section">
+        <h2>Atendimento na região</h2>
+        <p class="location-value">
+          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+          {{ publicProfile.neighborhood }}, Osasco
+        </p>
+      </section>
+    </main>
+  } @else {
+    <section class="profile-state">
+      <span class="state-icon"><ion-icon name="person-outline" aria-hidden="true"></ion-icon></span>
+      <h1>Perfil não encontrado</h1>
+      <p>{{ error() || 'Este perfil não está disponível.' }}</p>
+      @if (error()) {
+        <ion-button (click)="loadProfile()">Tentar novamente</ion-button>
+      }
+      <ion-button routerLink="/tabs/tab2">Ver categorias</ion-button>
+    </section>
+  }
+
+</ion-content>

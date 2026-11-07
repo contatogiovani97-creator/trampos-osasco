@@ -1,0 +1,169 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ selectedConversation() ? 'Conversa' : 'Mensagens' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #messageContent class="messages-content">
+  @if (messagingNotifications.notificationStatus()) {
+    <p class="notification-status" role="status">{{ messagingNotifications.notificationStatus() }}</p>
+  }
+  @if (profileError()) {
+    <p class="notification-status" role="status">{{ profileError() }}</p>
+  }
+
+  @if (!backend.isConfigured) {
+    <section class="messages-state">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+      <h1>Mensagens</h1>
+      <p>Configure o Firebase para trocar mensagens sobre oportunidades.</p>
+    </section>
+  } @else if (!backend.authReady()) {
+    <section class="messages-state"><p>Carregando sua conta...</p></section>
+  } @else if (!backend.currentUser()) {
+    <section class="messages-state">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+      <h1>Converse sobre oportunidades</h1>
+      <p>Entre na sua conta para ver candidaturas e trocar mensagens com contratantes e profissionais.</p>
+      <ion-button expand="block" routerLink="/tabs/account">Entrar ou criar conta</ion-button>
+    </section>
+  } @else if (backend.profileLoading()) {
+    <section class="messages-state"><p>Carregando seu perfil...</p></section>
+  } @else if (!backend.profile()) {
+    <section class="messages-state">
+      <h1>Complete seu perfil</h1>
+      <p>Para enviar mensagens, primeiro complete seu perfil.</p>
+      <ion-button expand="block" routerLink="/tabs/account">Abrir meu perfil</ion-button>
+    </section>
+  } @else if (selectedConversation(); as conversation) {
+    <section class="conversation-view">
+      <button class="back-button" type="button" (click)="closeConversation()">
+        <ion-icon name="arrow-back-outline" aria-hidden="true"></ion-icon>
+        Todas as mensagens
+      </button>
+      <header class="conversation-heading">
+        <span class="conversation-avatar">
+          @if (profileFor(conversation.ownerId === backend.currentUser()?.uid ? conversation.applicantId : conversation.ownerId)?.photoURL; as photoURL) {
+            <img [src]="photoURL" [alt]="otherParticipantName(conversation)" />
+          } @else {
+            {{ avatarInitial(otherParticipantName(conversation)) }}
+          }
+        </span>
+        <div>
+          <h1>{{ otherParticipantName(conversation) }}</h1>
+          <p>{{ conversation.opportunityTitle }}</p>
+        </div>
+      </header>
+
+      <div #messageList class="message-list" aria-live="polite">
+        @if (loadingMessages()) {
+          <p class="conversation-hint">Carregando mensagens...</p>
+        } @else if (messages().length === 0) {
+          <p class="conversation-hint">Envie uma mensagem para continuar a conversa.</p>
+        }
+        @for (message of messages(); track message.id) {
+          <article class="message-row" [class.message-row-mine]="message.senderId === backend.currentUser()?.uid">
+            <span class="message-avatar">
+              @if (profileFor(message.senderId)?.photoURL; as photoURL) {
+                <img [src]="photoURL" [alt]="message.senderName" />
+              } @else {
+                {{ avatarInitial(message.senderName) }}
+              }
+            </span>
+            <div class="message-bubble" [class.message-mine]="message.senderId === backend.currentUser()?.uid">
+              @if (message.senderId !== backend.currentUser()?.uid) {
+                <strong>{{ message.senderName }}</strong>
+              }
+              <p>{{ message.text }}</p>
+              @if (message.createdAt; as createdAt) {
+                <time>{{ createdAt.toDate() | date:"dd/MM 'às' HH:mm" }}</time>
+              }
+            </div>
+          </article>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="message-error" role="alert">{{ error() }}</p>
+      }
+
+      <form class="message-composer" (ngSubmit)="sendMessage()">
+        <ion-textarea
+          name="message"
+          rows="2"
+          maxlength="1000"
+          placeholder="Escreva sua mensagem..."
+          aria-label="Escreva sua mensagem"
+          [ngModel]="messageDraft()"
+          (ngModelChange)="messageDraft.set($event)"
+          (ionFocus)="onComposerFocus()"
+        ></ion-textarea>
+        <ion-button
+          type="button"
+          tabindex="-1"
+          [disabled]="!messageDraft().trim() || sending()"
+          aria-label="Enviar mensagem"
+          (pointerdown)="preserveComposerFocus($event)"
+          (click)="sendMessage()"
+        >
+          <ion-icon slot="icon-only" name="send-outline"></ion-icon>
+        </ion-button>
+      </form>
+    </section>
+  } @else {
+    <section class="inbox">
+      <div class="inbox-intro">
+        <p class="eyebrow">CONVERSAS DE TRABALHO</p>
+        <h1>Mensagens</h1>
+        <p>Converse com profissionais e contratantes sobre as oportunidades.</p>
+      </div>
+
+      @if (error()) {
+        <p class="message-error" role="alert">{{ error() }}</p>
+      } @else if (loadingConversations()) {
+        <p class="messages-state">Carregando conversas...</p>
+      } @else if (conversations().length === 0) {
+        <section class="messages-state empty-inbox">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <h2>Nenhuma conversa ainda</h2>
+          <p>Quando você enviar uma candidatura ou receber uma, a conversa aparecerá aqui.</p>
+          <ion-button expand="block" routerLink="/tabs/tab1">Ver oportunidades</ion-button>
+        </section>
+      } @else {
+        <div class="conversation-list">
+          @for (conversation of conversations(); track conversation.id) {
+            <button class="conversation-item" type="button" (click)="openConversation(conversation)">
+              <span class="conversation-avatar">
+                @if (profileFor(conversation.ownerId === backend.currentUser()?.uid ? conversation.applicantId : conversation.ownerId)?.photoURL; as photoURL) {
+                  <img [src]="photoURL" [alt]="otherParticipantName(conversation)" />
+                } @else {
+                  {{ avatarInitial(otherParticipantName(conversation)) }}
+                }
+              </span>
+              <span class="conversation-copy">
+                <strong>{{ otherParticipantName(conversation) }}</strong>
+                <span class="conversation-title">{{ conversation.opportunityTitle }}</span>
+                <span class="conversation-preview">{{ conversation.lastMessage }}</span>
+              </span>
+              @if (conversation.lastMessageAt; as lastMessageAt) {
+                <time>{{ lastMessageAt.toDate() | date:"dd/MM HH:mm" }}</time>
+              }
+              @if (messagingNotifications.isConversationUnread(conversation.id)) {
+                <ion-badge class="conversation-unread-badge">
+                  {{ messagingNotifications.unreadMessageCount(conversation.id) }}
+                </ion-badge>
+              }
+              <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+            </button>
+            @if (messagingNotifications.unreadMessageCount(conversation.id) > 0) {
+              <p class="conversation-unread-summary">
+                {{ messagingNotifications.unreadMessageCount(conversation.id) }}
+                {{ messagingNotifications.unreadMessageCount(conversation.id) === 1 ? 'mensagem não lida' : 'mensagens não lidas' }}
+              </p>
+            }
+          }
+        </div>
+      }
+    </section>
+  }
+</ion-content>

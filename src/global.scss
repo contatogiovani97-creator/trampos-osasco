@@ -1,3 +1,6 @@
+@config "../tailwind.config.js";
+@import "tailwindcss";
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -34,4 +37,43 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+
+ion-header ion-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  text-align: center;
+}
+
+p.eyebrow {
+  font-family: "Montserrat", sans-serif;
+}
+
+.category-icon img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+ion-popover.region-filter-popover,
+ion-popover.account-select-popover {
+  --max-height: 40vh;
+  --background: #fff;
+  --color: #17243b;
+  --border-radius: 14px;
+  --box-shadow: 0 12px 32px rgb(23 36 59 / 18%);
+  --ion-item-background: #fff;
+  --ion-item-color: #17243b;
+  --ion-item-border-color: #edf0f4;
+  --ion-item-background-activated: #eef4fb;
+}
+
+ion-popover.region-filter-popover::part(content),
+ion-popover.account-select-popover::part(content) {
+  border: 1px solid #e3e7ed;
+}
+
+ion-popover.region-filter-popover ion-select-popover,
+ion-popover.account-select-popover ion-select-popover {
+  --ion-color-primary: #02367b;
+  --ion-color-primary-rgb: 2, 54, 123;
+}

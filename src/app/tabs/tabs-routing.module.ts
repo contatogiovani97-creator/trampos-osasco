@@ -20,6 +20,18 @@ const routes: Routes = [
         loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
       },
       {
+        path: 'messages',
+        loadChildren: () => import('../messages/messages.module').then(m => m.MessagesPageModule)
+      },
+      {
+        path: 'osasco',
+        loadChildren: () => import('../osasco/osasco.module').then(m => m.OsascoPageModule)
+      },
+      {
+        path: 'account',
+        loadChildren: () => import('../account/account.module').then(m => m.AccountPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full'

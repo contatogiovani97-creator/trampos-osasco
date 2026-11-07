@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MessagingNotificationsService } from '../core/services/messaging-notifications.service';
 
 @Component({
   selector: 'app-tabs',
@@ -7,7 +8,6 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class TabsPage {
-
-  constructor() {}
+  readonly messagingNotifications = inject(MessagingNotificationsService);
 
 }

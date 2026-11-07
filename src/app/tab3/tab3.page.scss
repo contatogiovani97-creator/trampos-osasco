@@ -1,0 +1,175 @@
+.advertise-content {
+  --background: #f0f1f3;
+}
+
+ion-toolbar {
+  --background: #fff;
+  --color: #02367b;
+}
+
+.advertise-intro {
+  padding: 34px 20px 24px;
+  text-align: center;
+}
+
+.advertise-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 19px;
+  border-radius: 18px;
+  color: #02367b;
+  background: #e2ebf7;
+  font-size: 29px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #6a85a7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.advertise-intro h1 {
+  margin: 0;
+  color: #17243b;
+  font-size: 24px;
+  font-weight: 760;
+}
+
+.advertise-intro > p:last-child {
+  max-width: 340px;
+  margin: 8px auto 0;
+  color: #788397;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.plan-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 20px 24px;
+  padding: 16px;
+  border-radius: 17px;
+  color: #fff;
+  background: linear-gradient(135deg, #02367b, #165aa6);
+}
+
+.plan-label {
+  color: #bad1ee;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.plan-card p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.plan-card > strong {
+  white-space: nowrap;
+  font-size: 19px;
+}
+
+.plan-card > strong span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.application-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 20px;
+  padding: 18px;
+  border: 1px solid #e7eaf0;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.application-form h2 {
+  margin: 0 0 9px;
+  color: #17243b;
+  font-size: 17px;
+}
+
+.application-form label {
+  margin-top: 5px;
+  color: #34445e;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.application-form ion-input,
+.application-form ion-select,
+.application-form ion-textarea {
+  --background: #f7f8fa;
+  --border-radius: 11px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --highlight-color-focused: #02367b;
+  margin-top: 2px;
+  border: 1px solid #e5e9ef;
+  border-radius: 11px;
+  color: #17243b;
+  font-size: 13px;
+}
+
+.application-form ion-input,
+.application-form ion-select {
+  display: block;
+  width: 100%;
+}
+
+.application-form ion-input,
+.application-form ion-select {
+  min-height: 46px;
+}
+
+.application-form ion-select {
+  flex: 0 0 100%;
+}
+
+.application-form ion-input:focus-within,
+.application-form ion-select:focus-within,
+.application-form ion-textarea:focus-within {
+  border-color: #6a85a7;
+  box-shadow: 0 0 0 3px rgb(2 54 123 / 8%);
+}
+
+.application-form ion-textarea {
+  --padding-top: 10px;
+}
+
+.application-form ion-button {
+  margin: 12px 0 0;
+  --background: #14913c;
+  --border-radius: 12px;
+  --box-shadow: none;
+  min-height: 48px;
+  font-weight: 750;
+  text-transform: none;
+}
+
+.form-note {
+  margin: 2px 0 0;
+  color: #788397;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (min-width: 700px) {
+  .advertise-intro,
+  .plan-card,
+  .application-form {
+    max-width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}

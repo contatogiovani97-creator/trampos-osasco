@@ -1,17 +1,92 @@
-<ion-header [translucent]="true">
+<ion-header class="listing-header">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title>{{ selectedCategory?.name || 'Categorias' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="listing-content">
+  @if (!selectedCategory) {
+    <section class="listing-intro">
+      <p class="eyebrow">SERVIÇOS LOCAIS</p>
+      <h1>O que você precisa?</h1>
+      <p>Encontre profissionais de confiança em Osasco.</p>
+    </section>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+    <div class="category-grid">
+      @for (category of categories; track category.slug) {
+        <a class="category-card" [routerLink]="['/tabs/tab2', category.slug]">
+          <span class="category-icon">
+            @if (category.image) {
+              <img [src]="category.image" alt="" />
+            } @else {
+              <ion-icon [name]="category.icon"></ion-icon>
+            }
+          </span>
+          <span class="category-copy">
+            <strong>{{ category.name }}</strong>
+            <span>{{ category.description }}</span>
+          </span>
+        </a>
+      }
+    </div>
+  } @else {
+    <section class="listing-intro">
+      <a class="back-link" routerLink="/tabs/tab2">
+        <ion-icon name="arrow-back" aria-hidden="true"></ion-icon>
+        Todas as categorias
+      </a>
+      <p class="eyebrow">PROFISSIONAIS EM OSASCO</p>
+      <h1>{{ selectedCategory.name }}</h1>
+      <p>{{ selectedCategory.description }}</p>
+    </section>
+
+    <div class="filters">
+      <label for="neighborhood-filter">Região</label>
+      <ion-select
+        id="neighborhood-filter"
+        aria-label="Filtrar por região"
+        interface="popover"
+        labelPlacement="stacked"
+        [interfaceOptions]="regionFilterPopoverOptions"
+        [(ngModel)]="selectedNeighborhood"
+      >
+        @for (neighborhood of neighborhoods; track neighborhood) {
+          <ion-select-option [value]="neighborhood">{{ neighborhood }}</ion-select-option>
+        }
+      </ion-select>
+    </div>
+
+    <p class="listing-count">{{ filteredProfessionals.length }} profissionais encontrados</p>
+
+    @if (loadError()) {
+      <p class="empty-state" role="alert">{{ loadError() }}</p>
+    }
+
+    @for (professional of filteredProfessionals; track professional.id) {
+      <a class="professional-listing" [routerLink]="['/professional', professional.id]">
+        <div class="listing-card-top">
+          <span class="avatar">
+            @if (professional.photoURL) {
+              <img [src]="professional.photoURL" [alt]="'Foto de ' + professional.displayName" />
+            } @else {
+              {{ professional.displayName.slice(0, 1).toUpperCase() }}
+            }
+          </span>
+        </div>
+        <h2>{{ professional.displayName }}</h2>
+        <p class="profession">{{ professional.categoryName || 'Serviços locais' }}</p>
+        <p class="summary">{{ professional.bio || 'Perfil disponível para oportunidades na região.' }}</p>
+        <div class="listing-meta">
+          <span><ion-icon name="location-outline"></ion-icon> {{ professional.neighborhood }} · Osasco</span>
+        </div>
+      </a>
+    }
+
+    @if (filteredProfessionals.length === 0) {
+      <p class="empty-state">
+        Ainda não há profissionais nesta categoria e região. Tente outra região.
+      </p>
+    }
+  }
+
 </ion-content>

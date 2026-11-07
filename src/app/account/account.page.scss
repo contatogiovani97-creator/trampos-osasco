@@ -1,0 +1,390 @@
+.account-content {
+  --background: #f0f1f3;
+  --padding-bottom: 30px;
+}
+
+ion-toolbar {
+  --background: #fff;
+  --color: #02367b;
+}
+
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 18px 0;
+  padding: 20px;
+  border: 1px solid #e7eaf0;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.account-card.auth-card {
+  width: calc(100% - 36px);
+  max-width: 560px;
+  margin: clamp(32px, 8vh, 72px) auto 0;
+  padding: 20px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.auth-card > .eyebrow,
+.auth-card > h1,
+.auth-card > .account-description {
+  text-align: center;
+}
+
+.account-card h1 {
+  margin: 0;
+  color: #17243b;
+  font-size: 22px;
+}
+
+.account-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.account-avatar-column {
+  display: flex;
+  flex: 0 0 72px;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.account-heading-copy {
+  min-width: 0;
+}
+
+.account-heading h1 {
+  font-size: 19px;
+}
+
+.account-heading > div > p:last-child,
+.account-description,
+.account-email {
+  margin: 4px 0 0;
+  color: #788397;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.my-opportunities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e7eaf0;
+}
+
+.my-opportunities h2 {
+  margin: 0;
+  color: #17243b;
+  font-size: 16px;
+}
+
+.my-opportunities > p,
+.my-opportunity > span,
+.my-opportunity > p {
+  margin: 0;
+  color: #788397;
+  font-size: 12px;
+}
+
+.my-opportunity > .published-at {
+  font-size: 11px;
+}
+
+.my-opportunity > .opportunity-status {
+  color: #788397;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.remove-opportunity-button {
+  align-self: flex-start;
+  min-height: 30px;
+  margin: 0;
+  --color: #a32323;
+  font-size: 11px;
+  text-transform: none;
+}
+
+.edit-opportunity-button {
+  align-self: flex-start;
+  min-height: 30px;
+  margin: 0;
+  --color: #02367b;
+  font-size: 11px;
+  text-transform: none;
+}
+
+.opportunity-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  padding: 10px 0;
+  border-top: 1px solid #e7eaf0;
+}
+
+.opportunity-edit-form label {
+  margin-top: 4px;
+  color: #34445e;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.opportunity-edit-form ion-input,
+.opportunity-edit-form ion-select,
+.opportunity-edit-form ion-textarea {
+  --background: #f7f8fa;
+  --border-radius: 10px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  width: 100%;
+  border: 1px solid #e5e9ef;
+  border-radius: 10px;
+  color: #17243b;
+  font-size: 12px;
+}
+
+.opportunity-edit-form ion-input,
+.opportunity-edit-form ion-select {
+  min-height: 42px;
+}
+
+.opportunity-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opportunity-edit-actions ion-button {
+  --border-radius: 10px;
+  margin: 2px 0 0;
+  font-size: 11px;
+  text-transform: none;
+}
+
+.my-opportunity {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid #e7eaf0;
+  border-radius: 12px;
+}
+
+.my-opportunity > strong {
+  color: #17243b;
+  font-size: 13px;
+}
+
+.application-message {
+  padding-top: 8px;
+  border-top: 1px solid #e7eaf0;
+}
+
+.application-message a {
+  color: #02367b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.application-message p {
+  margin: 5px 0 0;
+  color: #43516a;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.account-avatar,
+.setup-notice > ion-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 16px;
+  color: #02367b;
+  background: #eaf0f8;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.account-avatar {
+  overflow: hidden;
+}
+
+.account-avatar img,
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.photo-button {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #02367b;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.photo-input {
+  display: none;
+}
+
+.setup-notice > ion-icon {
+  padding: 12px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #6a85a7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+form label {
+  margin-top: 5px;
+  color: #34445e;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+form ion-input,
+form ion-select,
+form ion-textarea {
+  display: block;
+  width: 100%;
+  --background: #f7f8fa;
+  --border-radius: 11px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  margin-top: 2px;
+  border: 1px solid #e5e9ef;
+  border-radius: 11px;
+  color: #17243b;
+  font-size: 13px;
+}
+
+form ion-input,
+form ion-select {
+  min-height: 46px;
+}
+
+form ion-select {
+  flex: 0 0 100%;
+}
+
+form ion-input:focus-within,
+form ion-select:focus-within,
+form ion-textarea:focus-within {
+  border-color: #6a85a7;
+  box-shadow: 0 0 0 3px rgb(2 54 123 / 8%);
+}
+
+form ion-button,
+.setup-notice ion-button {
+  --background: #02367b;
+  --border-radius: 12px;
+  --box-shadow: none;
+  min-height: 48px;
+  margin: 10px 0 0;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.public-profile-link,
+.mode-toggle {
+  color: #02367b;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mode-toggle {
+  padding: 12px 0 0;
+  border: 0;
+  background: transparent;
+}
+
+.setup-notice > p {
+  margin: 0;
+  color: #59677c;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.error-message {
+  color: #a32323;
+  background: #fff0ef;
+}
+
+.logout-button {
+  display: block;
+  margin: 16px auto;
+  text-transform: none;
+}
+
+.site-loading-overlay {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  color: #17243b;
+  background: #f0f1f3;
+  text-align: center;
+}
+
+.site-loading-overlay ion-spinner {
+  width: 42px;
+  height: 42px;
+  color: #02367b;
+}
+
+.site-loading-overlay h2 {
+  margin: 18px 0 0;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.site-loading-overlay p {
+  max-width: 300px;
+  margin: 8px 0 0;
+  color: #788397;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (min-width: 700px) {
+  .account-card {
+    max-width: 520px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}

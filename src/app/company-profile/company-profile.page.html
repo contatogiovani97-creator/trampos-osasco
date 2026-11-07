@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1" text="" aria-label="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Empresa em destaque</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="company-content">
+  @if (company; as business) {
+    <div class="company-cover">
+      <span class="cover-orbit"></span>
+      <span class="company-monogram">{{ business.initials }}</span>
+      <span class="sponsored-label"><ion-icon name="megaphone-outline"></ion-icon> Empresa patrocinada</span>
+    </div>
+
+    <main class="company-main">
+      <section class="company-identity">
+        <p class="eyebrow">EMPRESA LOCAL · OSASCO</p>
+        <h1>{{ business.name }}</h1>
+        <p>{{ business.categoryName }} · {{ business.neighborhood }}</p>
+      </section>
+
+      <section class="company-rating">
+        <span><ion-icon name="star"></ion-icon> {{ business.rating }}</span>
+        <span>{{ business.reviewCount }} avaliações demonstrativas</span>
+      </section>
+
+      <section class="company-section">
+        <h2>Sobre a empresa</h2>
+        <p>{{ business.summary }}</p>
+      </section>
+
+      <section class="company-section">
+        <h2>O que você encontra</h2>
+        <ul>
+          @for (offering of business.offerings; track offering) {
+            <li><ion-icon name="checkmark-circle-outline"></ion-icon>{{ offering }}</li>
+          }
+        </ul>
+      </section>
+
+      <p class="demo-disclaimer">
+        Perfil, avaliações e informações de exemplo. A indicação de patrocinado representa
+        o espaço comercial reservado para empresas anunciantes.
+      </p>
+    </main>
+  } @else {
+    <section class="company-not-found">
+      <ion-icon name="business-outline"></ion-icon>
+      <h1>Empresa não encontrada</h1>
+      <p>Este perfil não está disponível.</p>
+      <ion-button routerLink="/tabs/tab1">Voltar ao início</ion-button>
+    </section>
+  }
+
+</ion-content>
+
+@if (company) {
+  <div class="company-contact-bar">
+    <div><span>Conheça o negócio local</span><strong>{{ company.name }}</strong></div>
+    <ion-button (click)="showDemoContactNotice()">
+      <ion-icon slot="start" name="call-outline"></ion-icon>
+      Contato
+    </ion-button>
+  </div>
+}
